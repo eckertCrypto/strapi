@@ -132,7 +132,9 @@ module.exports = strapi => {
           };
           break;
         case 'pg':
-          client.types.setTypeParser(1700, 'text', parseFloat);
+          client.types.setTypeParser(1700, 'text', value =>
+            value && value.length > 13 ? value : parseFloat(value)
+          ); // numeric filter
 
           if (_.isString(_.get(options.connection, 'schema'))) {
             options.pool = {

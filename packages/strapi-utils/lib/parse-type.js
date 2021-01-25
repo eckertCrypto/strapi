@@ -3,9 +3,8 @@
 const _ = require('lodash');
 const dates = require('date-fns');
 
-const timeRegex = new RegExp(
-  '^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]{1,3})?$'
-);
+const timeRegex = new RegExp('^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]{1,3})?$');
+const bigIntRegex = new RegExp('^d*$');
 
 const parseTime = value => {
   if (dates.isDate(value)) return dates.format(value, 'HH:mm:ss.SSS');
@@ -53,6 +52,20 @@ const parseDateTimeOrTimestamp = value => {
   }
 };
 
+const parseBigInt = value => {
+  if (typeof value !== 'string') {
+    if (typeof value === 'number') value = value + '';
+    else throw new Error(`Expected a string or number, got a ${typeof value}`);
+  }
+  const result = value.match(bigIntRegex);
+
+  if (result === null) {
+    throw new Error('Invalid bigint format, expected \\d*');
+  }
+
+  return value;
+};
+
 /**
  * Cast basic values based on attribute type
  * @param {Object} options - Options
@@ -72,12 +85,11 @@ const parseType = ({ type, value }) => {
         return false;
       }
 
-      throw new Error(
-        'Invalid boolean input. Expected "t","1","true","false","0","f"'
-      );
+      throw new Error('Invalid boolean input. Expected "t","1","true","false","0","f"');
     }
-    case 'integer':
     case 'biginteger':
+      return parseBigInt(value);
+    case 'integer':
     case 'float':
     case 'decimal': {
       return _.toNumber(value);

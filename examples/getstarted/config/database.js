@@ -14,9 +14,9 @@ const postgres = {
   connector: 'bookshelf',
   settings: {
     client: 'postgres',
-    database: 'strapi',
-    username: 'strapi',
-    password: 'strapi',
+    database: 'test',
+    username: 'test',
+    password: 'test',
     port: 5432,
     host: 'localhost',
   },

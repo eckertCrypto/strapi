@@ -179,7 +179,7 @@ const buildColType = ({ name, attribute, table, tableExists = false, definition,
     case 'integer':
       return table.integer(name);
     case 'biginteger':
-      return table.bigInteger(name);
+      return table.decimal(name, 78, 0); //.bigInteger(name);
     case 'float':
       return table.double(name);
     case 'decimal':
